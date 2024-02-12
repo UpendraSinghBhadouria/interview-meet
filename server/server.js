@@ -23,7 +23,7 @@ const io = new Server(server, {
 // middlewares
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://interview-meet-server.onrender.com',
+    origin: 'https://interview-meet.vercel.app',
     credentials: true
 }));
 app.use(express.json());
