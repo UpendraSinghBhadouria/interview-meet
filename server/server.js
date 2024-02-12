@@ -23,7 +23,7 @@ const io = new Server(server, {
 // middlewares
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true
 }));
 app.use(express.json());
