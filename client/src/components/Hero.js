@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import InterviewMeetImg from '../assets/interview-meet.png'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux';
+import SocketContext from '../context/socketContext';
 const Hero = () => {
-  const { roomId } = useSelector(state => state.room);
+  const { roomId } = useContext(SocketContext);
 
   return (
     <div name='home' className='w-full h-full bg-zinc-200 flex flex-col justify-between'>

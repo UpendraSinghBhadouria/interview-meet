@@ -166,7 +166,7 @@ const Register = () => {
                             <img width={32} src={AddAvatar} alt="" />
                             <span>Add an avatar</span>
                         </label>
-                        <button className='bg-indigo-600 p-[10px] text-white font-bold border-none cursor-pointer disabled:cursor-not-allowed' disabled={perc > 0 && perc < 100}>Sign up</button>
+                        <button className='bg-indigo-600 p-[10px] text-white font-bold border-none cursor-pointer disabled:cursor-not-allowed' disabled={perc > 0 && perc < 100}>Register</button>
                     </form>
                     <p className='text-[12px] text-black mt-[10px]'>You do have an account?
                         <Link to="/login"> Login</Link>

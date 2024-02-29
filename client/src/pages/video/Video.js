@@ -2,23 +2,19 @@ import React, { useContext, useEffect } from "react";
 import "./Video.scss";
 import Player from "../../components/player/Player";
 import Input from "../../components/input/Input";
-import { useDispatch, useSelector } from "react-redux";
 import usePeer from "../../hooks/usePeer";
 import useMediaStream from "../../hooks/useMediaStream";
 import usePlayer from "../../hooks/usePlayer";
-import SocketContext from "../../context/socket";
-import { setMessageList } from "../../redux/features/roomSlice";
+import SocketContext from "../../context/socketContext";
 import Message from "../../components/message/Message";
 import Navbar from "../../components/Navbar";
 
 const Video = () => {
-    const { messageList } = useSelector(state => state.room);
     const { peer, myId } = usePeer();
     const { stream } = useMediaStream();
     const { players, setPlayers } = usePlayer();
-    const { socket } = useContext(SocketContext);
 
-    const dispatch = useDispatch();
+    const { socket, messageList, setMessageList } = useContext(SocketContext);
 
     useEffect(() => {
         const handleUserConnected = (newUser) => {
@@ -89,11 +85,11 @@ const Video = () => {
 
     useEffect(() => {
         socket?.on("receive_message", (data) => {
-            dispatch(setMessageList(data));
+            setMessageList((prev) => [...prev, data]);
         })
         // eslint-disable-next-line
     }, [socket])
-
+    console.log({ messageList })
     return (
         <div className='video'>
             <Navbar />

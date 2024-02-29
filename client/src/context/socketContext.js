@@ -1,14 +1,16 @@
-import React, { createContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { setRoomId } from "../redux/features/roomSlice";
+import AuthContext from "./authContext";
 
 const SocketContext = createContext();
 
 export const SocketContextProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
-    const dispatch = useDispatch();
-    const { currentUser } = useSelector(state => state.user);
+    const [roomId, setRoomId] = useState(null);
+    const [message, setMessage] = useState('');
+    const [messageList, setMessageList] = useState([]);
+
+    const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
         const socketInstance = io(`${process.env.REACT_APP_API_URL}`);
@@ -22,14 +24,14 @@ export const SocketContextProvider = ({ children }) => {
 
     useEffect(() => {
         socket?.on("getRoomInfo", ({ roomId, role }) => {
-            dispatch(setRoomId(roomId));
+            setRoomId(roomId);
             console.log({ roomId, role })
         })
 
         return () => {
             socket?.disconnect();
         }
-        // eslint-disable-next-line
+        // eslint-disable-next-line 
     }, [socket])
 
     useEffect(() => {
@@ -48,7 +50,15 @@ export const SocketContextProvider = ({ children }) => {
         };
     }, [socket]);
     return (
-        <SocketContext.Provider value={{ socket, setSocket }}>
+        <SocketContext.Provider value={{
+            socket,
+            setSocket,
+            roomId,
+            message,
+            messageList,
+            setMessage,
+            setMessageList
+        }}>
             {children}
         </SocketContext.Provider>
     )

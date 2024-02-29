@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MdMenu } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import AuthContext from '../context/authContext';
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
-
+    const { currentUser,logout } = useContext(AuthContext);
     const handleNav = () => {
         setNav(prev => !prev);
     }
@@ -21,8 +22,26 @@ const Navbar = () => {
                     <Link to="/" className='text-black mr-4 p-4'>About</Link>
                     <Link to="/" className='text-black mr-4 p-4'>Rules</Link>
                     <Link to="/" className='text-black mr-4 p-4'>Video</Link>
-                    <Link to="/register" className='text-black mr-4 p-4'>Register</Link>
-                    <Link to="/login" className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-1 flex items-center justify-center'>Login</Link>
+
+                    {currentUser ?
+                        <>
+                            <div className='flex items-center justify-center mr-4'>
+                                <img src={currentUser?.img} className='h-8 w-8 rounded-full object-cover cursor-pointer' alt='/' />
+                            </div>
+                            <Link 
+                            to="/" 
+                            className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-1 flex items-center justify-center'
+                            onClick={logout}
+                            >Logout
+                            </Link>
+                        </>
+                        : (
+                            <>
+                                <Link to="/register" className='text-black mr-4 p-4'>Register</Link>
+                                <Link to="/login" className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-1 flex items-center justify-center'>Login</Link>
+                            </>
+                        )}
+
                 </div>
 
                 <div className='md:hidden cursor-pointer' onClick={handleNav}>
@@ -35,12 +54,17 @@ const Navbar = () => {
                 <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>About</Link>
                 <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Rules</Link>
                 <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Video</Link>
-                <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Register</Link>
 
-                <div className='my-4 flex flex-col'>
-                    <Link to="/register" className='bg-transparent border text-indigo-600 border-indigo-600 rounded-md px-8 py-3 mb-4 text-center'>Register</Link>
-                    <Link to="/login" className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-3 text-center'>Login</Link>
-                </div>
+                {currentUser ? (
+                    <div className='my-4 flex flex-col'>
+                        <Link to="/" className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-3 text-center'>Logout</Link>
+                    </div>
+                ) : (
+                    <div className='my-4 flex flex-col'>
+                        <Link to="/register" className='bg-transparent border text-indigo-600 border-indigo-600 rounded-md px-8 py-3 mb-4 text-center'>Register</Link>
+                        <Link to="/login" className='text-white border bg-indigo-600 border-indigo-600 hover:bg-transparent hover:text-indigo-600 rounded-md px-8 py-3 text-center'>Login</Link>
+                    </div>
+                )}
             </div>
 
         </div>

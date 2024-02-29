@@ -1,9 +1,10 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Home from './pages/home'
-import Login from './pages/login'
-import Register from './pages/register'
-import About from './pages/about'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import About from './pages/About'
+import ProtectedRoute from './pages/ProtectedRoute'
 import Video from './pages/video/Video'
 
 const App = () => {
@@ -14,7 +15,12 @@ const App = () => {
         <Route path='/about' element={<About />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/video/:roomId' element={<Video />} />
+
+        <Route path='/video/:roomId' element={
+          <ProtectedRoute>
+            <Video />
+          </ProtectedRoute>
+        } />
       </Routes>
     </>
   )

@@ -1,10 +1,10 @@
-import React, { } from 'react'
+import React, { useContext } from 'react'
 import './Message.scss';
-import { useSelector } from 'react-redux';
+import AuthContext from '../../context/authContext';
 
 const Message = ({ messageContent }) => {
 
-    const { currentUser } = useSelector(state => state.user);
+    const { currentUser } = useContext(AuthContext);
 
     return (
         <div className={`message ${currentUser?.name === messageContent?.username && 'owner'}`}>
@@ -14,8 +14,6 @@ const Message = ({ messageContent }) => {
                         currentUser?.img : messageContent?.userImg
                     }
                     className='img'
-                    height={40}
-                    width={40}
                     alt=''
                 />
                 <p>{messageContent?.username}</p>

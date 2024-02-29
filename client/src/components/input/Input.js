@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './Input.scss';
 import AttachImg from '../../assets/attach.png';
 import Img from '../../assets/img.png';
-import {useDispatch, useSelector} from 'react-redux';
-import { setMessage, setMessageList } from '../../redux/features/roomSlice';
+import AuthContext from '../../context/authContext';
+import SocketContext from '../../context/socketContext';
 
 const Input = ({ socket }) => {
     const [enteredMessage, setEnteredMessage] = useState('');
-    const { roomId } = useSelector(state => state.room);
-    const {currentUser} = useSelector(state => state.user); 
-    const dispatch = useDispatch();
+    const { currentUser } = useContext(AuthContext);
+    const { setMessageList, setMessage, roomId } = useContext(SocketContext);
 
     const inputChangeHandler = (event) => {
         setEnteredMessage(event.target.value);
@@ -19,16 +18,21 @@ const Input = ({ socket }) => {
         const messageData = {
             room: roomId,
             username: currentUser.name,
-            userImg:currentUser.img,
+            userImg: currentUser.img,
             message: enteredMessage
         }
 
         await socket.emit("send_message", messageData);
-        dispatch(setMessageList(messageData));
-        dispatch(setMessage(enteredMessage));
+        setMessageList((prev) => [...prev, messageData]);
+        setMessage(enteredMessage);
         setEnteredMessage('');
     }
 
+    const onKeyDownHandler = (event) => {
+        if (event.key === "Enter") {
+            sendMessaage();
+        }
+    }
     return (
         <div className='input'>
             <button>Next</button>
@@ -37,6 +41,7 @@ const Input = ({ socket }) => {
                 placeholder='Type something..'
                 value={enteredMessage}
                 onChange={inputChangeHandler}
+                onKeyDown={onKeyDownHandler}
             />
             <div className="send">
                 <img src={AttachImg} className='img' height={24} alt='' />

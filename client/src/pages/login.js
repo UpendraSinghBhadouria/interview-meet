@@ -1,17 +1,15 @@
-import axios from 'axios';
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { loginFailure, loginStart, loginSuccess } from '../redux/features/userSlice';
 import Navbar from '../components/Navbar';
+import AuthContext from '../context/authContext';
 
 const Login = () => {
     const [enteredValues, setEnteredValues] = useState({
         email: '',
         password: '',
     })
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
     const handleChange = (event) => {
         setEnteredValues((prev) => {
@@ -21,19 +19,11 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        dispatch(loginStart());
         try {
-            const { email, password } = enteredValues;
-            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-                email, password
-            }, {
-                withCredentials: true
-            });
-            dispatch(loginSuccess(res.data));
+            await login(enteredValues);
             navigate("/");
-            console.log(res.data)
         } catch (error) {
-            dispatch(loginFailure());
+            console.log(error)
         }
     }
 

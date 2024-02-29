@@ -93,8 +93,6 @@ io.on("connection", (socket) => {
 
 
     socket.on("send_message", (data) => {
-        // socket.to(data.room).emit("receive_message", data)
-        // console.log(data)
         if (rooms[data.room]) {
             socket.to(data.room).emit("receive_message", data);
             console.log(data);
@@ -153,7 +151,6 @@ io.on("connection", (socket) => {
         socket.broadcast.to(roomId).emit("userConnected", id)
     })
     function generateRoomId() {
-        // Implement a proper room ID generation logic
         return Math.random().toString(36).substring(7);
     }
 })

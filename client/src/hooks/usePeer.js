@@ -1,15 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import SocketContext from "../context/socket";
+import SocketContext from "../context/socketContext";
 
 const usePeer = () => {
-    const { socket } = useContext(SocketContext);
+    const { socket, roomId } = useContext(SocketContext);
 
     const [peer, setPeer] = useState();
     const [myId, setMyId] = useState();
-    
-    const {roomId} = useSelector(state => state.room);
-    console.log({roomId})
+
+    console.log({ roomId })
     useEffect(() => {
         (async function initPeer() {
             const myPeer = new (await import('peerjs')).default();
