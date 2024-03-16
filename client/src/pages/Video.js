@@ -1,24 +1,154 @@
-import React from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import Navbar from '../components/Navbar'
+import usePeer from '../hooks/usePeer';
+import useMediaStream from '../hooks/useMediaStream';
+import usePlayer from '../hooks/usePlayer';
+import SocketContext from '../context/socketContext';
+import Player from '../components/player/Player';
+import { FcEndCall } from "react-icons/fc";
+import Message from '../components/Message';
+import Input from '../components/Input';
 
 const Video = () => {
+  const { peer, myId } = usePeer();
+  const { stream } = useMediaStream();
+  const { players, setPlayers } = usePlayer();
+
+  const { socket, messageList, setMessageList } = useContext(SocketContext);
+  const chatContainerRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat container when chatList changes
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messageList]);
+
+  useEffect(() => {
+    const handleUserConnected = (newUser) => {
+      console.log(`user connected in room with ${newUser}`);
+
+      const call = peer?.call(newUser, stream);
+      call?.on('stream', (incommingStream) => {
+        console.log(`Incomming stream from ${newUser}`);
+
+        setPlayers((prev) => {
+          return {
+            ...prev,
+            [newUser]: {
+              url: incommingStream,
+              muted: true,
+              playing: true
+            }
+          }
+        })
+      })
+    }
+
+    socket?.on('userConnected', handleUserConnected);
+
+    return () => {
+      socket?.off('userConnected', handleUserConnected);
+    }
+
+  }, [peer, socket, stream, setPlayers])
+
+  useEffect(() => {
+    peer?.on('call', (call) => {
+      const { peer: callerId } = call;
+
+      call?.answer(stream);
+
+      call?.on('stream', (incommingStream) => {
+        console.log(`Incomming stream from ${callerId}`);
+
+        setPlayers((prev) => {
+          return {
+            ...prev,
+            [callerId]: {
+              url: incommingStream,
+              muted: true,
+              playing: true
+            }
+          }
+        })
+      })
+    })
+  }, [peer, stream, setPlayers])
+
+  useEffect(() => {
+    if (!stream || !myId) return;
+    console.log(`setting my stream ${myId}`);
+    setPlayers((prev) => {
+      return {
+        ...prev,
+        [myId]: {
+          url: stream,
+          muted: true,
+          playing: true
+        }
+      }
+    })
+  }, [myId, stream, setPlayers])
+
+  useEffect(() => {
+    socket?.on("receive_message", (data) => {
+      setMessageList((prev) => [...prev, data]);
+    })
+    // eslint-disable-next-line
+  }, [socket])
+  console.log({ messageList })
+
   return (
     <div className='h-screen w-screen'>
       <div className='h-[70px]'>
         <Navbar />
       </div>
-      <div className="relative flex-1 h-[calc(100vh-70px)] p-4">
-        {/* stranger video screen */}
-        <div className="h-full w-full bg-gray-100 border rounded-xl">
-          <video autoPlay muted loop>
-            <source src="/videos/video-1.mp4" type="video/mp4" />
-          </video>
+      <div className="h-[calc(100vh-70px)] flex justify-center items-center bg-gray-100">
+        <div className='flex-[2] h-full flex justify-center items-center flex-col'>
+          <div className='flex sm:gap-3 flex-col sm:flex-row'>
+            {Object.keys(players).map((playerId) => {
+              const { url, muted, playing } = players[playerId];
+              return (
+                <Player
+                  key={playerId}
+                  url={url}
+                  muted={muted}
+                  playing={playing}
+                />
+              )
+            })}
+          </div>
+          <div className='flex gap-3'>
+            <span className='flex justify-center items-center text-2xl text-red-500 font-bold gap-2 bg-gray-100 p-2 cursor-pointer rounded-md'>
+              End Call
+              <FcEndCall size={30} />
+            </span>
+            <span className='text-xl sm:text-2xl text-red-500 font-bold gap-2 bg-gray-100 p-2 cursor-pointer rounded-md'>
+              View Messages
+            </span>
+          </div>
         </div>
-        {/* my video screen */}
-        <div className="absolute bottom-4 right-4 w-[320px] h-[200px] bg-white border rounded-xl">
-          <video autoPlay muted loop>
-            <source src="/videos/video-2.mp4" type="video/mp4" />
-          </video>
+        <div className='flex-[1] h-full'>
+          <div className='h-full w-full flex flex-col bg-gray-100 border rounded-xl'>
+
+            {/* chatHeader */}
+            <div className="p-4">
+              <h2 className="text-2xl font-semibold"> View Messages </h2>
+            </div>
+            {/* chatMain */}
+            <div className="h-full p-4 overflow-y-auto" ref={chatContainerRef}>
+              <div className="h-full flex flex-col">
+                {messageList?.map((message) => {
+                  return <Message messageContent={message} key={Math.random()} />
+                })}
+              </div>
+            </div>
+            {/* chatFooter */}
+            <Input socket={socket} />
+
+          </div>
         </div>
       </div>
     </div>

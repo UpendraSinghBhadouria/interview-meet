@@ -5,7 +5,7 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './pages/ProtectedRoute';
-import Video from './pages/video/Video';
+import Video from './pages/Video';
 
 const App = () => {
   return (
