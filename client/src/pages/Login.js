@@ -8,6 +8,7 @@ const Login = () => {
         email: '',
         password: '',
     })
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
@@ -22,8 +23,9 @@ const Login = () => {
         try {
             await login(enteredValues);
             navigate("/");
-        } catch (error) {
-            console.log(error)
+        } catch (err) {
+            console.log(err.response.data.message);
+            setError(err.response.data.message);
         }
     }
 
@@ -52,6 +54,7 @@ const Login = () => {
                             onChange={handleChange}
                             name='password'
                         />
+                        {error && <span className='text-red-500 font-light'>{error}</span>}
                         <button className='text-white bg-indigo-600 p-[10px] font-bold border-none cursor-pointer'>Login</button>
                     </form>
 

@@ -18,7 +18,6 @@ export const SocketContextProvider = ({ children }) => {
     }, [])
 
     useEffect(() => {
-        console.log({ currentUser })
         socket?.emit('joinRoom', currentUser?.role);
     }, [socket, currentUser])
 

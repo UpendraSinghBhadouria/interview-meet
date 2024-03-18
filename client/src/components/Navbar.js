@@ -19,9 +19,9 @@ const Navbar = () => {
                 </div>
 
                 <div className='hidden md:flex pr-4'>
-                    <Link to="/" className='text-black mr-4 p-4'>About</Link>
-                    <Link to="/" className='text-black mr-4 p-4'>Rules</Link>
-                    <Link to="/" className='text-black mr-4 p-4'>Video</Link>
+                    <Link to="/" className='text-black mr-4 p-4'>Home</Link>
+                    <Link to="/about" className='text-black mr-4 p-4'>About</Link>
+                    <Link to="/rules" className='text-black mr-4 p-4'>Rules</Link>
 
                     {currentUser ?
                         <>
@@ -51,9 +51,9 @@ const Navbar = () => {
             </div>
 
             <div className={nav ? " bg-zinc-200 flex flex-col w-full px-8" : 'hidden'}>
-                <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>About</Link>
-                <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Rules</Link>
-                <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Video</Link>
+                <Link to="/" className='p-4 border-b-2 border-zinc-300 w-full'>Home</Link>
+                <Link to="/about" className='p-4 border-b-2 border-zinc-300 w-full'>About</Link>
+                <Link to="/rules" className='p-4 border-b-2 border-zinc-300 w-full'>Rules</Link>
 
                 {currentUser ? (
                     <div className='my-4 flex flex-col'>

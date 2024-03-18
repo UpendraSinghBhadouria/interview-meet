@@ -24,6 +24,7 @@ const Register = () => {
     const [selectedRole, setSelectedRole] = useState(null);
     const [file, setFile] = useState(null);
     const [perc, setPerc] = useState(0);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const handleChange = (event) => {
@@ -96,8 +97,9 @@ const Register = () => {
             });
             navigate("/login");
             console.log(res.data);
-        } catch (error) {
-            console.log(error)
+        } catch (err) {
+            console.log(err.response.data);
+            setError(err.response.data);
         }
     }
 
@@ -166,6 +168,12 @@ const Register = () => {
                             <img width={32} src={AddAvatar} alt="" />
                             <span>Add an avatar</span>
                         </label>
+
+                        {error?.status === 500 &&
+                            <p className='text-red-500 font-light'>
+                                Please fill all the details!
+                            </p>}
+
                         <button className='bg-indigo-600 p-[10px] text-white font-bold border-none cursor-pointer disabled:cursor-not-allowed' disabled={perc > 0 && perc < 100}>Register</button>
                     </form>
                     <p className='text-[12px] text-black mt-[10px]'>You do have an account?

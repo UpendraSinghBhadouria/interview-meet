@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Video from './pages/Video';
+import OurTeam from './pages/OurTeam';
+import Rules from './pages/Rules';
 
 const App = () => {
   return (
@@ -13,6 +15,8 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
+        <Route path='/our-team' element={<OurTeam />} />
+        <Route path='/rules' element={<Rules />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
 

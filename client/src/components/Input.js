@@ -3,7 +3,7 @@ import AuthContext from '../context/authContext';
 import SocketContext from '../context/socketContext';
 import { IoImageOutline, IoSend } from 'react-icons/io5';
 
-const Input = ({socket}) => {
+const Input = ({ socket }) => {
     const [enteredMessage, setEnteredMessage] = useState('');
     const { currentUser } = useContext(AuthContext);
     const { setMessageList, setMessage, roomId } = useContext(SocketContext);
@@ -14,6 +14,9 @@ const Input = ({socket}) => {
 
     const sendMessaage = async (event) => {
         event.preventDefault();
+
+        if (enteredMessage.trim() === "") return;
+        
         const messageData = {
             room: roomId,
             username: currentUser.name,
